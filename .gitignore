@@ -1,9 +1,13 @@
 fonts/*
-!fonts/FC*
 
+!fonts/*.bat
+!fonts/ttfs
 !fonts/slugs
+
 fonts/slugs/*
+fonts/ttfs/*
 !fonts/slugs/FC*
+!fonts/ttfs/FC*
 
 !fonts/LICENSING.txt
 
@@ -48,4 +52,3 @@ luac.out
 *.i*86
 *.x86_64
 *.hex
-*.bat

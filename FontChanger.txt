@@ -13,5 +13,6 @@
 ## SavedVariables: FontChangerSettings
 
 FontChanger_Constants.lua
+FontChanger_Options.lua
 FontChanger_Menu.lua
 FontChanger.lua
