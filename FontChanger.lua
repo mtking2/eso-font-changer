@@ -4,12 +4,12 @@ local LAM2 = LibAddonMenu2
 FC.name = "FontChanger"
 FC.version = "1.4"
 
-local REGULAR_FONT = "FontChanger/Fonts/FCUI.slug"
-local REGULAR_FONT_BOLD = "FontChanger/Fonts/FCUI_Bold.slug"
-local NAMEPLATE_FONT = "FontChanger/Fonts/FCUI.slug"
-local SCT_FONT = "FontChanger/Fonts/FCUI.slug"
-local CHAT_FONT = "FontChanger/Fonts/FCChat.slug"
-local BOOK_FONT = "FontChanger/Fonts/FCBook.slug"
+local REGULAR_FONT = "FontChanger/fonts/slugs/FCUI.slug"
+local REGULAR_FONT_BOLD = "FontChanger/fonts/slugs/FCUI_Bold.slug"
+local NAMEPLATE_FONT = "FontChanger/fonts/slugs/FCUI.slug"
+local SCT_FONT = "FontChanger/fonts/slugs/FCUI.slug"
+local CHAT_FONT = "FontChanger/fonts/slugs/FCChat.slug"
+local BOOK_FONT = "FontChanger/fonts/slugs/FCBook.slug"
 
 function FC:SetUIFonts()
 	for key, value in zo_insecurePairs(_G) do
@@ -76,7 +76,6 @@ function FC:SetUIFonts()
 end
 
 function FC:SetNameplateFont(style, size)
-	-- /script d(GetNameplateKeyboardFont())
 	local Font, CurrentFontStyle
 	local NewFontAndSize = (NAMEPLATE_FONT .. size)
 	-- Gamepad Mode -- 
@@ -113,8 +112,6 @@ function FC:SetSCTFont(style, size)
 end
 
 function FC:ChangeChatFonts()
-	-- /script d(ZoFontChat:GetFontInfo())
-	-- /script ZoFontChat:SetFont('FontChanger/Fonts/FontChanger_ChatFont.slug|24|shadow')
 	local fontStyle = CHAT_FONT
 	local fontSize = GetChatFontSize()
 	local fontWeight = self.SV.chat_style
@@ -155,20 +152,6 @@ function FC:SetDefaults()
 	end
 end
 
--- function FC:SetupEvents(toggle)
---     -- EVENT_ZONE_CHANGED --
---     if toggle then
---         EVENT_MANAGER:RegisterForEvent(self.name, EVENT_PLAYER_ACTIVATED, function(...)
---             self:SetNameplateFont(self.SV.nameplate_style, self.SV.nameplate_size)
---         end)
---         EVENT_MANAGER:RegisterForEvent(self.name, EVENT_PLAYER_ACTIVATED, function(...)
---             self:SetSCTFont(self.SV.sct_style, self.SV.sct_size)
---         end)
---     else
---         EVENT_MANAGER:UnregisterForEvent(self.name, EVENT_PLAYER_ACTIVATED)
---     end
--- end
-
 function FC:SetupEvents(toggle)
 	if toggle then
 		EVENT_MANAGER:RegisterForEvent(self.name, EVENT_PLAYER_ACTIVATED, function(...)
@@ -178,14 +161,9 @@ function FC:SetupEvents(toggle)
 		EVENT_MANAGER:RegisterForEvent(self.name, EVENT_ZONE_CHANGED, function(...)
 			self:SetSCTFont(self.SV.sct_style, self.SV.sct_size)
 		end)
-		-- EVENT_MANAGER:RegisterForEvent(self.name, EVENT_GAMEPAD_PREFERRED_MODE_CHANGED, function(...)
-		--     self:SetNameplateFont(self.SV.nameplate_style, self.SV.nameplate_size)
-		--     self:SetSCTFont(self.SV.sct_style, self.SV.sct_size)
-		-- end)
 	else
 		EVENT_MANAGER:UnregisterForEvent(self.name, EVENT_PLAYER_ACTIVATED)
 		EVENT_MANAGER:UnregisterForEvent(self.name, EVENT_ZONE_CHANGED)
-		-- EVENT_MANAGER:UnregisterForEvent(self.name, EVENT_GAMEPAD_PREFERRED_MODE_CHANGED)
 	end
 end
 
