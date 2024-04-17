@@ -4,6 +4,14 @@
 * Fixed SCT resetting on zone change
 * Moved .ttf and .slug files into their own folders
 * Added a batch script to automatically generate .slug files and add them to `FontChanger_Options.lua`
+* Added all fonts as dropdown options to the addon settings, including vanilla game fonts
+	* UI Font
+	* Nameplate Font
+	* SCT Font
+	* Chat Font
+	* Book Font
+	* Letter Font
+	* Stone Tablet Font
 
 ## 1.2 (Antisenil)
 * changed the names of fonts to not overwrite old ones
