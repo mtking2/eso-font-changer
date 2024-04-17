@@ -10,7 +10,7 @@ function FC:InitialiseAddonMenu()
 		type = "panel",
 		name = "FontChanger",
 		displayName = "|c4B8BFEFont Changer|r",
-		author = "|c4B8BFEFerrety|r, |cFF1493Antisenil|r, |c9966ffThaadjarvis|r",
+		author = "|c4B8BFEFerrety|r, |cFF1493Antisenil|r, |c9966ffzetauma|r",
 		version = self.version,
 		slashCommand = "/fc",
 		registerForRefresh = true,

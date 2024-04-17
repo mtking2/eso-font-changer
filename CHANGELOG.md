@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.4 (Thaadjarvis)
+## 1.4 (zetauma)
 * Fixed SCT resetting on zone change
 * Moved .ttf and .slug files into their own folders
 * Added a batch script to automatically generate .slug files and add them to `FontChanger_Options.lua`
