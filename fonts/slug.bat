@@ -38,19 +38,18 @@ set output_file=..\FontChanger_Options.lua
 :: Clear the output file in case it exists
 if exist %output_file% del %output_file%
 
-:: List of strings
+:: String builder
 set list="-- DON'T EDIT THIS FILE DIRECTLY --"
 set list=%list%;"-- technically you can, but you should really place your"
 set list=%list%;"-- font files in the fonts/ttfs directory and re-run fonts/slug.bat"
-set list=%list%;"FontChanger = {}"
 set list=%list%;"local FC = FontChanger or {}"
-set list=%list%;"FC.FONT_CHOICES = {"
+set list=%list%;"FC.CUSTOM_FONT_CHOICES = {"
 
 for %%f in (slugs\*) do (
 	set list=!list!;"	"%%~nf","
 )
 set list=%list%;"}"
-set list=%list%;"FC.FONT_VALUES = {"
+set list=%list%;"FC.CUSTOM_FONT_VALUES = {"
 for %%f in (slugs\*) do (
 	set list=!list!;"	"FontChanger/fonts/slugs/%%~nf.slug","
 )

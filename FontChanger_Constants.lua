@@ -1,6 +1,30 @@
 FontChanger = {}
 local FC = FontChanger or {}
 
+FC.DEFAULT_FONT_CHOICES = {
+	"Univers57 (Vanilla UI)",
+	"Univers67 (Vanilla UI Bold)",
+	"Univers87 (Vanilla UI Bolder)",
+	"ProseAntiquePSMT (Vanilla Book)",
+	"Handwritten_Bold (Vanilla Letter)",
+	"TrajanPro-Regular (Vanilla Stone Tablet)",
+	"FTN47 (Vanilla Gamepad Light)",
+	"FTN57 (Vanilla Gamepad Medium)",
+	"FTN87 (Vanilla Gamepad Bold)",
+}
+
+FC.DEFAULT_FONT_VALUES = {
+	"EsoUI/Common/Fonts/Univers57.slug",
+	"EsoUI/Common/Fonts/Univers67.slug",
+	"EsoUI/Common/Fonts/Univers87.slug",
+	"EsoUI/Common/Fonts/ProseAntiquePSMT.slug",
+	"EsoUI/Common/Fonts/Handwritten_Bold.slug",
+	"EsoUI/Common/Fonts/TrajanPro-Regular.slug",
+	"EsoUI/Common/Fonts/FTN47.slug",
+	"EsoUI/Common/Fonts/FTN57.slug",
+	"EsoUI/Common/Fonts/FTN87.slug",
+}
+
 FC.FONTSTYLE_VALUES =
 {
 	FONT_STYLE_NORMAL,
@@ -142,12 +166,29 @@ FC.FONTSIZE_VALUES =
 
 FC.defaults =
 {
+	--fonts
+	default_menu_font = "FontChanger/fonts/slugs/FCUI.slug",
+	default_menu_bold_font = "FontChanger/fonts/slugs/FCUI_Bold.slug",
+	default_chat_font = "FontChanger/fonts/slugs/FCChat.slug",
+	default_sct_font = "FontChanger/fonts/slugs/FCUI.slug",
+	default_nameplate_font = "FontChanger/fonts/slugs/FCUI.slug",
+	default_book_font = "FontChanger/fonts/slugs/FCBook.slug",
+	default_letter_font = "EsoUI/Common/Fonts/Handwritten_Bold.slug",
+	default_tablet_font = "EsoUI/Common/Fonts/TrajanPro-Regular.slug",
+
+	-- scales
 	default_menu_font_scale = "1",
 	default_menu_bold_font_scale = "1",
 	default_book_font_scale = "1",
+	default_letter_font_scale = "1",
+	default_tablet_font_scale = "1",
+
+	-- sizes
 	default_nameplate_size = "28",
-	default_nameplate_style = FONT_STYLE_SOFT_SHADOW_THIN,
 	default_sct_size = "32",
+	
+	-- styles
+	default_nameplate_style = FONT_STYLE_SOFT_SHADOW_THIN,
 	default_sct_style = FONT_STYLE_SOFT_SHADOW_THIN,
 	default_chat_style = "thick-outline",
 }

@@ -17,58 +17,58 @@ function FC:SetUIFonts()
 			local font = {value:GetFontInfo()}
 			-- DEFAULT USED AS REGULAR/CHAT FONT -- 
 			if (font[1] == "EsoUI/Common/Fonts/Univers57.slug") or (font[1] == "$(MEDIUM_FONT)") then
-				font[1] = REGULAR_FONT
+				font[1] = self.SV.menu_font
 				-- Default Size: 1 --
 				font[2] = font[2] * self.SV.menu_font_scale
 				value:SetFont(table.concat(font, "|"))
 			end
 			-- DEFAULT USED AS BOLD FONT --
 			if (font[1] == "EsoUI/Common/Fonts/Univers67.slug") or (font[1] == "$(BOLD_FONT)") then
-				font[1] = REGULAR_FONT_BOLD
+				font[1] = self.SV.menu_bold_font
 				-- Default Size: 0.9 --
 				font[2] = font[2] * self.SV.menu_bold_font_scale
 				value:SetFont(table.concat(font, "|"))
 			end
-			-- DEFAULT USED AS ANTIQUE FONT --
+			-- DEFAULT USED AS BOOK FONT --
 			if (font[1] == "EsoUI/Common/Fonts/ProseAntiquePSMT.slug") or (font[1] == "$(ANTIQUE_FONT)") then
-				font[1] = BOOK_FONT
+				font[1] = self.SV.book_font
 				-- Default Size: 0.9 --
 				font[2] = font[2] * self.SV.book_font_scale
 				value:SetFont(table.concat(font, "|"))
 			end
 			-- DEFAULT USED AS HANDWRITTEN FONT --
 			if (font[1] == "EsoUI/Common/Fonts/Handwritten_Bold.slug") or (font[1] == "$(HANDWRITTEN_FONT)") then
-				font[1] = BOOK_FONT
+				font[1] = self.SV.letter_font
 				-- Default Size: 1 --
-				font[2] = font[2] * self.SV.book_font_scale
+				font[2] = font[2] * self.SV.letter_font_scale
 				value:SetFont(table.concat(font, "|"))
 			end
 			-- DEFAULT USED AS STONE TABLET FONT --
 			if (font[1] == "EsoUI/Common/Fonts/TrajanPro-Regular.slug") or (font[1] == "$(STONE_TABLET_FONT)") then
-				font[1] = BOOK_FONT
+				font[1] = self.SV.tablet_font
 				-- Default Size: 1 --
-				font[2] = font[2] * self.SV.book_font_scale
+				font[2] = font[2] * self.SV.tablet_font_scale
 				value:SetFont(table.concat(font, "|"))
 			end
 			-- -- DEFAULT USED AS GAMEPAD_LIGHT_FONT --
 			if (font[1] == "EsoUI/Common/Fonts/FTN47.slug") or (font[1] == "$(GAMEPAD_LIGHT_FONT)") then
-				font[1] = REGULAR_FONT
+				font[1] = self.SV.menu_font
 				-- Default Size: 1 --
 				font[2] = font[2] * self.SV.menu_font_scale
 				value:SetFont(table.concat(font, "|"))
 			end
 			-- DEFAULT USED AS GAMEPAD_MEDIUM_FONT --
 			if (font[1] == "EsoUI/Common/Fonts/FTN57.slug") or (font[1] == "$(GAMEPAD_MEDIUM_FONT)") then
-				font[1] = REGULAR_FONT
+				font[1] = self.SV.menu_font
 				-- Default Size: 1 --
 				font[2] = font[2] * self.SV.menu_font_scale
 				value:SetFont(table.concat(font, "|"))
 			end
 			-- DEFAULT USED AS GAMEPAD_BOLD_FONT --
 			if (font[1] == "EsoUI/Common/Fonts/FTN87.slug") or (font[1] == "$(GAMEPAD_BOLD_FONT)") then
-				font[1] = REGULAR_FONT_BOLD
+				font[1] = self.SV.menu_bold_font
 				-- Default Size: 1 --
-				font[2] = font[2] * self.SV.menu_font_scale
+				font[2] = font[2] * self.SV.menu_bold_font_scale
 				value:SetFont(table.concat(font, "|"))
 			end
 		end
@@ -77,42 +77,42 @@ end
 
 function FC:SetNameplateFont(style, size)
 	local Font, CurrentFontStyle
-	local NewFontAndSize = (NAMEPLATE_FONT .. size)
+	local NewFontAndSize = (self.SV.nameplate_font .. size)
 	-- Gamepad Mode -- 
 	if IsInGamepadPreferredMode() then
 		CurrentFontAndSize, CurrentFontStyle = GetNameplateGamepadFont()
 		if CurrentFontAndSize ~= NewFontAndSize or CurrentFontStyle ~= style then
-			SetNameplateGamepadFont(NAMEPLATE_FONT .. "|" .. size .. "|", style)
+			SetNameplateGamepadFont(self.SV.nameplate_font .. "|" .. size .. "|", style)
 		end
 		-- Keyboard Mode --
 	else
 		CurrentFontAndSize, CurrentFontStyle = GetNameplateKeyboardFont()
 		if CurrentFontAndSize ~= NewFontAndSize or CurrentFontStyle ~= style then
-			SetNameplateKeyboardFont(NAMEPLATE_FONT .. "|" .. size .. "|", style)
+			SetNameplateKeyboardFont(self.SV.nameplate_font .. "|" .. size .. "|", style)
 		end
 	end
 end
 
 function FC:SetSCTFont(style, size)
 	local CurrentFontAndSize, CurrentFontStyle
-	local NewFontAndSize = (SCT_FONT .. size)
+	local NewFontAndSize = (self.SV.sct_font .. size)
 	-- Gamepad Mode -- 
 	if IsInGamepadPreferredMode() then
 		CurrentFontAndSize, CurrentFontStyle = GetSCTGamepadFont()
 		if CurrentFontAndSize ~= NewFontAndSize or CurrentFontStyle ~= style then
-			SetSCTGamepadFont(SCT_FONT .. "|" .. size .. "|", style)
+			SetSCTGamepadFont(self.SV.sct_font .. "|" .. size .. "|", style)
 		end
 		-- Keyboard Mode --
 	else
 		CurrentFontAndSize, CurrentFontStyle = GetSCTKeyboardFont()
 		if CurrentFontAndSize ~= NewFontAndSize or CurrentFontStyle ~= style then
-			SetSCTKeyboardFont(SCT_FONT .. "|" .. size .. "|", style)
+			SetSCTKeyboardFont(self.SV.sct_font .. "|" .. size .. "|", style)
 		end
 	end
 end
 
 function FC:ChangeChatFonts()
-	local fontStyle = CHAT_FONT
+	local fontStyle = self.SV.chat_font
 	local fontSize = GetChatFontSize()
 	local fontWeight = self.SV.chat_style
 	local fontName = string.format("%s|$(KB_%s)|%s", fontStyle, fontSize, fontWeight)
@@ -126,6 +126,34 @@ end
 
 function FC:SetDefaults()
 	-- Set Defaults --
+
+	-- Fonts
+	if self.SV.menu_font == nil then
+		self.SV.menu_font = self.SV.default_menu_font
+	end
+	if self.SV.menu_bold_font == nil then
+		self.SV.menu_bold_font = self.SV.default_menu_bold_font
+	end
+	if self.SV.chat_font == nil then
+		self.SV.chat_font = self.SV.default_chat_font
+	end
+	if self.SV.nameplate_font == nil then
+		self.SV.nameplate_font = self.SV.default_nameplate_font
+	end
+	if self.SV.sct_font == nil then
+		self.SV.sct_font = self.SV.default_sct_font
+	end
+	if self.SV.book_font == nil then
+		self.SV.book_font = self.SV.default_book_font
+	end
+	if self.SV.letter_font == nil then
+		self.SV.letter_font = self.SV.default_letter_font
+	end
+	if self.SV.tablet_font == nil then
+		self.SV.tablet_font = self.SV.default_tablet_font
+	end
+
+	-- Scales
 	if self.SV.menu_font_scale == nil then
 		self.SV.menu_font_scale = self.SV.default_menu_font_scale
 	end
@@ -135,14 +163,24 @@ function FC:SetDefaults()
 	if self.SV.book_font_scale == nil then
 		self.SV.book_font_scale = self.SV.default_book_font_scale
 	end
+	if self.SV.letter_font_scale == nil then
+		self.SV.letter_font_scale = self.SV.default_letter_font_scale
+	end
+	if self.SV.tablet_font_scale == nil then
+		self.SV.tablet_font_scale = self.SV.default_tablet_font_scale
+	end
+
+	-- Sizes
 	if self.SV.nameplate_size == nil then
 		self.SV.nameplate_size = self.SV.default_nameplate_size
 	end
-	if self.SV.nameplate_style == nil then
-		self.SV.nameplate_style = self.SV.default_nameplate_style
-	end
 	if self.SV.sct_size == nil then
 		self.SV.sct_size = self.SV.default_sct_size
+	end
+
+	-- Styles
+	if self.SV.nameplate_style == nil then
+		self.SV.nameplate_style = self.SV.default_nameplate_style
 	end
 	if self.SV.sct_style == nil then
 		self.SV.sct_style = self.SV.default_sct_style
