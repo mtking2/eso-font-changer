@@ -11,6 +11,7 @@ fonts/ttfs/*
 
 !fonts/LICENSING.txt
 
+releases/
 
 # Compiled Lua sources
 luac.out
