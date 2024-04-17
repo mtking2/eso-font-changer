@@ -1,6 +1,6 @@
 # ESO FontChanger
 
-This is a fork of the [FontChanger](https://www.esoui.com/downloads/fileinfo.php?id=3728) addon by Ferrety (and later modification by Antisenil)
+This is a fork of the [FontChanger](https://www.esoui.com/downloads/fileinfo.php?id=3728) addon by Ferrety (and later modifications by Antisenil)
 
 Primarily, this fork aims to simplify the process of adding new fonts to the addon by providing a batch script to generate the .slug files for you. See detailed instructions below.
 
