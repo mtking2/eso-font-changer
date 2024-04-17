@@ -4,7 +4,7 @@ This is a fork of the [FontChanger](https://www.esoui.com/downloads/fileinfo.php
 
 Primarily, this fork aims to simplify the process of adding new fonts to the addon by providing a batch script to generate the .slug files for you. See detailed instructions below.
 
-It also add some new options to the addon settings to more easily change the fonts in game.
+It also adds some new options to the addon settings to more easily change the fonts in game.
 
 <p align="center">
 	<img src="assets/settings_1.jpg" width=80% />
@@ -14,8 +14,8 @@ It also add some new options to the addon settings to more easily change the fon
 
 
 ## How to add additional fonts
-1. Download your desired font in TTF format and put it in the FontChanger/fonts/ttfs folder
-2. Copy & Paste into the FontChanger/fonts folder.
+1. Download your desired font in TTF format
+2. Copy & Paste into the FontChanger/fonts/ttfs folder
 3. Locate `slugfont.exe` in your ESO installation and copy it to FontChanger/fonts. Some common locations are:
 	- C:\Program Files\Zenimax Online\The Elder Scrolls Online\game\client\slugfont.exe
 	- C:\Program Files (x86)\Zenimax Online\The Elder Scrolls Online\game\client\slugfont.exe
