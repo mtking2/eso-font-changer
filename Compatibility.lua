@@ -6,8 +6,9 @@ function FC:OverridePPFonts()
 	PP.f.u57 = self.SV.menu_font
 	PP.f.u67 = self.SV.menu_bold_font
 end
-ZO_PreHook(PP, "Core", function (...) FC:OverridePPFonts() return false end)
-
+if PP then
+	ZO_PreHook(PP, "Core", function (...) FC:OverridePPFonts() return false end)
+end
 
 
 -- Compatibility
