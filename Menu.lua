@@ -5,7 +5,7 @@ function FC:DefaultEverything()
 	self:SetFont(self.defaults.font, self.defaults.style, self.defaults.size)
 end
 ]] --
-function FC:InitialiseAddonMenu()
+function FC:InitializeAddonMenu()
 	local panelData = {
 		type = "panel",
 		name = "FontChanger",
@@ -425,6 +425,24 @@ function FC:InitialiseAddonMenu()
 		end,
 		warning = "Reload UI Required.",
 		scrollable = false
+	})
+
+	table.insert(optionsData, {
+		type = "header",
+		name = "Gamepad Mode"
+	})
+
+	table.insert(optionsData, {
+		type = "checkbox",
+		name = "Enable for Gamepad mode",
+		tooltip = "Enables the font settings when in Gamepad mode.",
+		default = true,
+		getFunc = function()
+			return self.SV.gamepad_fonts_enabled
+		end,
+		setFunc = function(gamepad_fonts_enabled)
+			self.SV.gamepad_fonts_enabled = gamepad_fonts_enabled
+		end,
 	})
 
 	LAM2:RegisterAddonPanel("FontChangerAddonOptions", panelData)

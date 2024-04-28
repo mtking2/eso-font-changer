@@ -2,14 +2,7 @@ local FC = FontChanger or {}
 local LAM2 = LibAddonMenu2
 
 FC.name = "FontChanger"
-FC.version = "1.4"
-
-local REGULAR_FONT = "FontChanger/fonts/slugs/FCUI.slug"
-local REGULAR_FONT_BOLD = "FontChanger/fonts/slugs/FCUI_Bold.slug"
-local NAMEPLATE_FONT = "FontChanger/fonts/slugs/FCUI.slug"
-local SCT_FONT = "FontChanger/fonts/slugs/FCUI.slug"
-local CHAT_FONT = "FontChanger/fonts/slugs/FCChat.slug"
-local BOOK_FONT = "FontChanger/fonts/slugs/FCBook.slug"
+FC.version = "1.5"
 
 function FC:SetUIFonts()
 	for key, value in zo_insecurePairs(_G) do
@@ -50,26 +43,29 @@ function FC:SetUIFonts()
 				font[2] = font[2] * self.SV.tablet_font_scale
 				value:SetFont(table.concat(font, "|"))
 			end
-			-- -- DEFAULT USED AS GAMEPAD_LIGHT_FONT --
-			if (font[1] == "EsoUI/Common/Fonts/FTN47.slug") or (font[1] == "$(GAMEPAD_LIGHT_FONT)") then
-				font[1] = self.SV.menu_font
-				-- Default Size: 1 --
-				font[2] = font[2] * self.SV.menu_font_scale
-				value:SetFont(table.concat(font, "|"))
-			end
-			-- DEFAULT USED AS GAMEPAD_MEDIUM_FONT --
-			if (font[1] == "EsoUI/Common/Fonts/FTN57.slug") or (font[1] == "$(GAMEPAD_MEDIUM_FONT)") then
-				font[1] = self.SV.menu_font
-				-- Default Size: 1 --
-				font[2] = font[2] * self.SV.menu_font_scale
-				value:SetFont(table.concat(font, "|"))
-			end
-			-- DEFAULT USED AS GAMEPAD_BOLD_FONT --
-			if (font[1] == "EsoUI/Common/Fonts/FTN87.slug") or (font[1] == "$(GAMEPAD_BOLD_FONT)") then
-				font[1] = self.SV.menu_bold_font
-				-- Default Size: 1 --
-				font[2] = font[2] * self.SV.menu_bold_font_scale
-				value:SetFont(table.concat(font, "|"))
+
+			if self.SV.gamepad_fonts_enabled then
+				-- DEFAULT USED AS GAMEPAD_LIGHT_FONT --
+				if (font[1] == "EsoUI/Common/Fonts/FTN47.slug") or (font[1] == "$(GAMEPAD_LIGHT_FONT)") then
+					font[1] = self.SV.menu_font
+					-- Default Size: 1 --
+					font[2] = font[2] * self.SV.menu_font_scale
+					value:SetFont(table.concat(font, "|"))
+				end
+				-- DEFAULT USED AS GAMEPAD_MEDIUM_FONT --
+				if (font[1] == "EsoUI/Common/Fonts/FTN57.slug") or (font[1] == "$(GAMEPAD_MEDIUM_FONT)") then
+					font[1] = self.SV.menu_font
+					-- Default Size: 1 --
+					font[2] = font[2] * self.SV.menu_font_scale
+					value:SetFont(table.concat(font, "|"))
+				end
+				-- DEFAULT USED AS GAMEPAD_BOLD_FONT --
+				if (font[1] == "EsoUI/Common/Fonts/FTN87.slug") or (font[1] == "$(GAMEPAD_BOLD_FONT)") then
+					font[1] = self.SV.menu_bold_font
+					-- Default Size: 1 --
+					font[2] = font[2] * self.SV.menu_bold_font_scale
+					value:SetFont(table.concat(font, "|"))
+				end
 			end
 		end
 	end
@@ -78,8 +74,15 @@ end
 function FC:SetNameplateFont(style, size)
 	local Font, CurrentFontStyle
 	local NewFontAndSize = (self.SV.nameplate_font .. size)
-	-- Gamepad Mode -- 
+
+	-- d("SetNameplateFont, gamepad mode:" .. tostring(IsInGamepadPreferredMode()))
+
+	-- Gamepad Mode  -- 
 	if IsInGamepadPreferredMode() then
+		if not self.SV.gamepad_fonts_enabled then
+			SetNameplateGamepadFont("EsoUI/Common/Fonts/FTN57.slug|30|", self.SV.default_nameplate_style)
+			return
+		end
 		CurrentFontAndSize, CurrentFontStyle = GetNameplateGamepadFont()
 		if CurrentFontAndSize ~= NewFontAndSize or CurrentFontStyle ~= style then
 			SetNameplateGamepadFont(self.SV.nameplate_font .. "|" .. size .. "|", style)
@@ -96,8 +99,15 @@ end
 function FC:SetSCTFont(style, size)
 	local CurrentFontAndSize, CurrentFontStyle
 	local NewFontAndSize = (self.SV.sct_font .. size)
+
+	-- d("SetSCTFont, gamepad mode:" .. tostring(IsInGamepadPreferredMode()))
+
 	-- Gamepad Mode -- 
 	if IsInGamepadPreferredMode() then
+		if not self.SV.gamepad_fonts_enabled then
+			SetSCTGamepadFont("EsoUI/Common/Fonts/FTN87.slug|52|", self.SV.default_sct_style)
+			return
+		end
 		CurrentFontAndSize, CurrentFontStyle = GetSCTGamepadFont()
 		if CurrentFontAndSize ~= NewFontAndSize or CurrentFontStyle ~= style then
 			SetSCTGamepadFont(self.SV.sct_font .. "|" .. size .. "|", style)
@@ -188,6 +198,11 @@ function FC:SetDefaults()
 	if self.SV.chat_style == nil then
 		self.SV.chat_style = self.SV.default_chat_style
 	end
+
+	-- Misc
+	if self.SV.gamepad_fonts_enabled == nil then
+		self.SV.gamepad_fonts_enabled = self.SV.default_gamepad_fonts_enabled
+	end
 end
 
 function FC:SetupEvents(toggle)
@@ -199,13 +214,18 @@ function FC:SetupEvents(toggle)
 		EVENT_MANAGER:RegisterForEvent(self.name, EVENT_ZONE_CHANGED, function(...)
 			self:SetSCTFont(self.SV.sct_style, self.SV.sct_size)
 		end)
+		EVENT_MANAGER:RegisterForEvent(self.name, EVENT_GAMEPAD_PREFERRED_MODE_CHANGED, function(...)
+			self:SetNameplateFont(self.SV.nameplate_style, self.SV.nameplate_size)
+			self:SetSCTFont(self.SV.sct_style, self.SV.sct_size)
+		end)
 	else
 		EVENT_MANAGER:UnregisterForEvent(self.name, EVENT_PLAYER_ACTIVATED)
 		EVENT_MANAGER:UnregisterForEvent(self.name, EVENT_ZONE_CHANGED)
+		EVENT_MANAGER:UnregisterForEvent(self.name, EVENT_GAMEPAD_PREFERRED_MODE_CHANGED)
 	end
 end
 
-function FC:Initialise()
+function FC:Initialize()
 
 	local manager = GetAddOnManager()
 
@@ -233,8 +253,8 @@ function FC.OnLoad(event, addonName)
 		return
 	end
 	EVENT_MANAGER:UnregisterForEvent(FC.name, EVENT_ADD_ON_LOADED, FC.OnLoad)
-	FC:InitialiseAddonMenu()
-	FC:Initialise()
+	FC:InitializeAddonMenu()
+	FC:Initialize()
 end
 
 EVENT_MANAGER:RegisterForEvent(FC.name, EVENT_ADD_ON_LOADED, FC.OnLoad)

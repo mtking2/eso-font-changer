@@ -191,4 +191,7 @@ FC.defaults =
 	default_nameplate_style = FONT_STYLE_SOFT_SHADOW_THIN,
 	default_sct_style = FONT_STYLE_SOFT_SHADOW_THIN,
 	default_chat_style = "thick-outline",
+
+	-- misc
+	default_gamepad_fonts_enabled = true,
 }

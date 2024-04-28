@@ -21,6 +21,6 @@ It also adds some new options to the addon settings to more easily change the fo
 	- C:\Program Files (x86)\Zenimax Online\The Elder Scrolls Online\game\client\slugfont.exe
 	- C:\Steam\steamapps\common\Zenimax Online\The Elder Scrolls Online\game\client\slugfont.exe
 4. Run FontChanger/fonts/slug.bat
-	- This will automatically generate .slug files for all the fonts in the ttfs folder and update `FontChanger_Options.lua`
+	- This will automatically generate .slug files for all the fonts in the ttfs folder and update `CustomFontOptions.lua`
 5. Load up the game or run `/reloadui` to see the new fonts in the options menu
 
