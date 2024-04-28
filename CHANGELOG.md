@@ -2,7 +2,7 @@
 
 ## 1.5 (zetauma)
 * improved support for gamepad mode
-* added support for PerfectPixel (some compatibility taken from Antisenil's v1.3)
+* improved support for PerfectPixel (some compatibility refactored from 1.3)
 	* override PerfectPixel's fonts with a `ZO_PreHook`
 	* apply FontChanger's scaling to PerfectPixel
 
@@ -18,6 +18,12 @@
 	* Book Font
 	* Letter Font
 	* Stone Tablet Font
+
+## 1.3.1 (Antisenil)
+- reworked PostHook into a PreHook + added some extra stuff for PerfectPixel
+
+## 1.3 (Antisenil)
+- added a PostHook for PerfectPixel
 
 ## 1.2 (Antisenil)
 * changed the names of fonts to not overwrite old ones
