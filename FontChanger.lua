@@ -2,14 +2,7 @@ local FC = FontChanger or {}
 local LAM2 = LibAddonMenu2
 
 FC.name = "FontChanger"
-FC.version = "1.4"
-
-local REGULAR_FONT = "FontChanger/fonts/slugs/FCUI.slug"
-local REGULAR_FONT_BOLD = "FontChanger/fonts/slugs/FCUI_Bold.slug"
-local NAMEPLATE_FONT = "FontChanger/fonts/slugs/FCUI.slug"
-local SCT_FONT = "FontChanger/fonts/slugs/FCUI.slug"
-local CHAT_FONT = "FontChanger/fonts/slugs/FCChat.slug"
-local BOOK_FONT = "FontChanger/fonts/slugs/FCBook.slug"
+FC.version = "1.5"
 
 function FC:SetUIFonts()
 	for key, value in zo_insecurePairs(_G) do
@@ -232,7 +225,7 @@ function FC:SetupEvents(toggle)
 	end
 end
 
-function FC:Initialise()
+function FC:Initialize()
 
 	local manager = GetAddOnManager()
 
@@ -260,8 +253,8 @@ function FC.OnLoad(event, addonName)
 		return
 	end
 	EVENT_MANAGER:UnregisterForEvent(FC.name, EVENT_ADD_ON_LOADED, FC.OnLoad)
-	FC:InitialiseAddonMenu()
-	FC:Initialise()
+	FC:InitializeAddonMenu()
+	FC:Initialize()
 end
 
 EVENT_MANAGER:RegisterForEvent(FC.name, EVENT_ADD_ON_LOADED, FC.OnLoad)

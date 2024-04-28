@@ -1,9 +1,15 @@
 # Changelog
 
+## 1.5 (zetauma)
+* improved support for gamepad mode
+* added support for PerfectPixel (some compatibility taken from Antisenil's v1.3)
+	* override PerfectPixel's fonts with a `ZO_PreHook`
+	* apply FontChanger's scaling to PerfectPixel
+
 ## 1.4 (zetauma)
 * Fixed SCT resetting on zone change
 * Moved .ttf and .slug files into their own folders
-* Added a batch script to automatically generate .slug files and add them to `FontChanger_Options.lua`
+* Added a batch script to automatically generate .slug files and add them to `CustomFontOptions.lua`
 * Added all fonts as dropdown options to the addon settings, including vanilla game fonts
 	* UI Font
 	* Nameplate Font

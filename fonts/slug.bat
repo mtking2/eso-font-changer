@@ -33,7 +33,7 @@ echo.
 echo Fonts have been converted to slugs!
 
 :: Output file
-set output_file=..\FontChanger_Options.lua
+set output_file=..\CustomFontOptions.lua
 
 :: Clear the output file in case it exists
 if exist %output_file% del %output_file%

@@ -7,12 +7,13 @@
 ## Title: |c4B8BFEFont Changer|r
 ## Description: Changes most in-game fonts to new custom fonts.
 ## Author: |c4B8BFEFerrety|r, |cFF1493Antisenil|r, |c9966ffzetauma|r
-## Version: 1.4
+## Version: 1.5
 ## APIVersion: 101041
 ## DependsOn: LibAddonMenu-2.0
 ## SavedVariables: FontChangerSettings
 
-FontChanger_Constants.lua
-FontChanger_Options.lua
-FontChanger_Menu.lua
+Constants.lua
+CustomFontOptions.lua
+Menu.lua
 FontChanger.lua
+Compatibility.lua

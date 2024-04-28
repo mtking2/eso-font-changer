@@ -5,7 +5,7 @@ function FC:DefaultEverything()
 	self:SetFont(self.defaults.font, self.defaults.style, self.defaults.size)
 end
 ]] --
-function FC:InitialiseAddonMenu()
+function FC:InitializeAddonMenu()
 	local panelData = {
 		type = "panel",
 		name = "FontChanger",
