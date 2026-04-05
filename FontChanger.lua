@@ -134,6 +134,39 @@ function FC:ChangeChatFonts()
 	CHAT_SYSTEM:SetFontSize(CHAT_SYSTEM.GetFontSizeFromSetting())
 end
 
+function FC:HookLoreReader()
+	local fontMap = {
+		["EsoUI/Common/Fonts/ProseAntiquePSMT.slug"] = { font = "book_font", scale = "book_font_scale" },
+		["EsoUI/Common/Fonts/Handwritten_Bold.slug"] = { font = "letter_font", scale = "letter_font_scale" },
+		["EsoUI/Common/Fonts/TrajanPro-Regular.slug"] = { font = "tablet_font", scale = "tablet_font_scale" },
+	}
+
+	ZO_PostHook(LoreReader, "ApplyMedium", function(self)
+		local bodyFace, bodySize, bodyStyle = self.firstPage.body:GetFontInfo()
+		local mapping = fontMap[bodyFace]
+		if not mapping then return end
+
+		local newFont = FC.SV[mapping.font]
+		local scale = tonumber(FC.SV[mapping.scale]) or 1
+
+		local newBodySize = math.floor(bodySize * scale)
+		local bodyFontString = newFont .. "|" .. newBodySize
+		if bodyStyle and bodyStyle ~= "" then
+			bodyFontString = bodyFontString .. "|" .. bodyStyle
+		end
+		self.firstPage.body:SetFont(bodyFontString)
+		self.secondPage.body:SetFont(bodyFontString)
+
+		local titleFace, titleSize, titleStyle = self.title:GetFontInfo()
+		local newTitleSize = math.floor(titleSize * scale)
+		local titleFontString = newFont .. "|" .. newTitleSize
+		if titleStyle and titleStyle ~= "" then
+			titleFontString = titleFontString .. "|" .. titleStyle
+		end
+		self.title:SetFont(titleFontString)
+	end)
+end
+
 function FC:SetDefaults()
 	-- Set Defaults --
 
@@ -246,6 +279,7 @@ function FC:Initialize()
 	self:SetSCTFont(self.SV.sct_style, self.SV.sct_size)
 	self:SetUIFonts()
 	self:ChangeChatFonts()
+	self:HookLoreReader()
 end
 
 function FC.OnLoad(event, addonName)
