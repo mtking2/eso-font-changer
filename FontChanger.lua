@@ -263,6 +263,8 @@ function FC:SetupEvents(toggle)
 end
 
 function FC:Initialize()
+	if self.initialized then return end
+	self.initialized = true
 
 	local manager = GetAddOnManager()
 

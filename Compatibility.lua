@@ -5,6 +5,10 @@ if PP then
 	-- PP.f.u57/u67 are read by all PP modules (scenes, compass, keybind strip, etc.)
 	-- so this cascades FC's font choices throughout PP's UI.
 	ZO_PreHook(PP, "Core", function(...)
+		-- PP's EVENT_ADD_ON_LOADED may fire before FC's, so ensure FC is initialized
+		if not FC.SV then
+			FC:Initialize()
+		end
 		PP.f.u57 = FC.SV.menu_font
 		PP.f.u67 = FC.SV.menu_bold_font
 		return false
