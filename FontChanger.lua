@@ -141,8 +141,8 @@ function FC:HookLoreReader()
 		["EsoUI/Common/Fonts/TrajanPro-Regular.slug"] = { font = "tablet_font", scale = "tablet_font_scale" },
 	}
 
-	ZO_PostHook(LoreReader, "ApplyMedium", function(self)
-		local bodyFace, bodySize, bodyStyle = self.firstPage.body:GetFontInfo()
+	ZO_PostHook(LoreReader, "ApplyMedium", function(reader)
+		local bodyFace, bodySize, bodyStyle = reader.firstPage.body:GetFontInfo()
 		local mapping = fontMap[bodyFace]
 		if not mapping then return end
 
@@ -154,16 +154,16 @@ function FC:HookLoreReader()
 		if bodyStyle and bodyStyle ~= "" then
 			bodyFontString = bodyFontString .. "|" .. bodyStyle
 		end
-		self.firstPage.body:SetFont(bodyFontString)
-		self.secondPage.body:SetFont(bodyFontString)
+		reader.firstPage.body:SetFont(bodyFontString)
+		reader.secondPage.body:SetFont(bodyFontString)
 
-		local titleFace, titleSize, titleStyle = self.title:GetFontInfo()
+		local titleFace, titleSize, titleStyle = reader.title:GetFontInfo()
 		local newTitleSize = math.floor(titleSize * scale)
 		local titleFontString = newFont .. "|" .. newTitleSize
 		if titleStyle and titleStyle ~= "" then
 			titleFontString = titleFontString .. "|" .. titleStyle
 		end
-		self.title:SetFont(titleFontString)
+		reader.title:SetFont(titleFontString)
 	end)
 end
 
