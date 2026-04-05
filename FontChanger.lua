@@ -136,17 +136,19 @@ end
 
 function FC:HookLoreReader()
 	local fontMap = {
-		["EsoUI/Common/Fonts/ProseAntiquePSMT.slug"] = { font = "book_font", scale = "book_font_scale" },
-		["EsoUI/Common/Fonts/Handwritten_Bold.slug"] = { font = "letter_font", scale = "letter_font_scale" },
-		["EsoUI/Common/Fonts/TrajanPro-Regular.slug"] = { font = "tablet_font", scale = "tablet_font_scale" },
+		["$(ANTIQUE_FONT)"] = { font = "book_font", scale = "book_font_scale" },
+		["$(HANDWRITTEN_FONT)"] = { font = "letter_font", scale = "letter_font_scale" },
+		["$(STONE_TABLET_FONT)"] = { font = "tablet_font", scale = "tablet_font_scale" },
 	}
 
 	-- LORE_READER instance doesn't exist during EVENT_ADD_ON_LOADED; defer until all UI objects exist
 	EVENT_MANAGER:RegisterForEvent(self.name .. "LoreReader", EVENT_PLAYER_ACTIVATED, function()
 		EVENT_MANAGER:UnregisterForEvent(self.name .. "LoreReader", EVENT_PLAYER_ACTIVATED)
+		d("[FontChanger] LoreReader hook installed: " .. tostring(LORE_READER ~= nil))
 		ZO_PostHook(LORE_READER, "ApplyMedium", function(reader, medium, isGamepad)
 			local titleFontName, titleFontSize, titleFontStyle,
 				bodyFontName, bodyFontSize, bodyFontStyle = GetBookMediumFontInfo(medium, isGamepad)
+			d("[FontChanger] ApplyMedium fired — bodyFont: " .. tostring(bodyFontName) .. " mapped: " .. tostring(fontMap[bodyFontName] ~= nil))
 			local mapping = fontMap[bodyFontName]
 			if not mapping then return end
 
@@ -154,19 +156,11 @@ function FC:HookLoreReader()
 			local scale = tonumber(FC.SV[mapping.scale]) or 1
 
 			local newBodySize = math.floor(bodyFontSize * scale)
-			local bodyFontString = newFont .. "|" .. newBodySize
-			if bodyFontStyle and bodyFontStyle ~= "" then
-				bodyFontString = bodyFontString .. "|" .. bodyFontStyle
-			end
-			reader.firstPage.body:SetFont(bodyFontString)
-			reader.secondPage.body:SetFont(bodyFontString)
+			reader.firstPage.body:SetFont(ZO_CreateFontString(newFont, newBodySize, bodyFontStyle))
+			reader.secondPage.body:SetFont(ZO_CreateFontString(newFont, newBodySize, bodyFontStyle))
 
 			local newTitleSize = math.floor(titleFontSize * scale)
-			local titleFontString = newFont .. "|" .. newTitleSize
-			if titleFontStyle and titleFontStyle ~= "" then
-				titleFontString = titleFontString .. "|" .. titleFontStyle
-			end
-			reader.title:SetFont(titleFontString)
+			reader.title:SetFont(ZO_CreateFontString(newFont, newTitleSize, titleFontStyle))
 		end)
 	end)
 end
