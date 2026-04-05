@@ -141,10 +141,10 @@ function FC:HookLoreReader()
 		["EsoUI/Common/Fonts/TrajanPro-Regular.slug"] = { font = "tablet_font", scale = "tablet_font_scale" },
 	}
 
-	-- LoreReader is nil during EVENT_ADD_ON_LOADED; defer until all UI objects exist
+	-- LORE_READER instance doesn't exist during EVENT_ADD_ON_LOADED; defer until all UI objects exist
 	EVENT_MANAGER:RegisterForEvent(self.name .. "LoreReader", EVENT_PLAYER_ACTIVATED, function()
 		EVENT_MANAGER:UnregisterForEvent(self.name .. "LoreReader", EVENT_PLAYER_ACTIVATED)
-		ZO_PostHook(LoreReader, "ApplyMedium", function(reader)
+		ZO_PostHook(LORE_READER, "ApplyMedium", function(reader)
 			local bodyFace, bodySize, bodyStyle = reader.firstPage.body:GetFontInfo()
 			local mapping = fontMap[bodyFace]
 			if not mapping then return end
