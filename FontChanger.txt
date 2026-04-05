@@ -7,8 +7,8 @@
 ## Title: |c4B8BFEFont Changer|r
 ## Description: Changes most in-game fonts to new custom fonts.
 ## Author: |c4B8BFEFerrety|r, |cFF1493Antisenil|r, |c9966ffzetauma|r
-## Version: 1.5
-## APIVersion: 101041
+## Version: 1.6
+## APIVersion: 101049
 ## DependsOn: LibAddonMenu-2.0
 ## SavedVariables: FontChangerSettings
 

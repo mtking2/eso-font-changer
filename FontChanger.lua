@@ -2,7 +2,7 @@ local FC = FontChanger or {}
 local LAM2 = LibAddonMenu2
 
 FC.name = "FontChanger"
-FC.version = "1.5"
+FC.version = "1.6"
 
 function FC:SetUIFonts()
 	for key, value in zo_insecurePairs(_G) do
