@@ -141,29 +141,33 @@ function FC:HookLoreReader()
 		["EsoUI/Common/Fonts/TrajanPro-Regular.slug"] = { font = "tablet_font", scale = "tablet_font_scale" },
 	}
 
-	ZO_PostHook(LoreReader, "ApplyMedium", function(reader)
-		local bodyFace, bodySize, bodyStyle = reader.firstPage.body:GetFontInfo()
-		local mapping = fontMap[bodyFace]
-		if not mapping then return end
+	-- LoreReader is nil during EVENT_ADD_ON_LOADED; defer until all UI objects exist
+	EVENT_MANAGER:RegisterForEvent(self.name .. "LoreReader", EVENT_PLAYER_ACTIVATED, function()
+		EVENT_MANAGER:UnregisterForEvent(self.name .. "LoreReader", EVENT_PLAYER_ACTIVATED)
+		ZO_PostHook(LoreReader, "ApplyMedium", function(reader)
+			local bodyFace, bodySize, bodyStyle = reader.firstPage.body:GetFontInfo()
+			local mapping = fontMap[bodyFace]
+			if not mapping then return end
 
-		local newFont = FC.SV[mapping.font]
-		local scale = tonumber(FC.SV[mapping.scale]) or 1
+			local newFont = FC.SV[mapping.font]
+			local scale = tonumber(FC.SV[mapping.scale]) or 1
 
-		local newBodySize = math.floor(bodySize * scale)
-		local bodyFontString = newFont .. "|" .. newBodySize
-		if bodyStyle and bodyStyle ~= "" then
-			bodyFontString = bodyFontString .. "|" .. bodyStyle
-		end
-		reader.firstPage.body:SetFont(bodyFontString)
-		reader.secondPage.body:SetFont(bodyFontString)
+			local newBodySize = math.floor(bodySize * scale)
+			local bodyFontString = newFont .. "|" .. newBodySize
+			if bodyStyle and bodyStyle ~= "" then
+				bodyFontString = bodyFontString .. "|" .. bodyStyle
+			end
+			reader.firstPage.body:SetFont(bodyFontString)
+			reader.secondPage.body:SetFont(bodyFontString)
 
-		local titleFace, titleSize, titleStyle = reader.title:GetFontInfo()
-		local newTitleSize = math.floor(titleSize * scale)
-		local titleFontString = newFont .. "|" .. newTitleSize
-		if titleStyle and titleStyle ~= "" then
-			titleFontString = titleFontString .. "|" .. titleStyle
-		end
-		reader.title:SetFont(titleFontString)
+			local titleFace, titleSize, titleStyle = reader.title:GetFontInfo()
+			local newTitleSize = math.floor(titleSize * scale)
+			local titleFontString = newFont .. "|" .. newTitleSize
+			if titleStyle and titleStyle ~= "" then
+				titleFontString = titleFontString .. "|" .. titleStyle
+			end
+			reader.title:SetFont(titleFontString)
+		end)
 	end)
 end
 
