@@ -144,27 +144,27 @@ function FC:HookLoreReader()
 	-- LORE_READER instance doesn't exist during EVENT_ADD_ON_LOADED; defer until all UI objects exist
 	EVENT_MANAGER:RegisterForEvent(self.name .. "LoreReader", EVENT_PLAYER_ACTIVATED, function()
 		EVENT_MANAGER:UnregisterForEvent(self.name .. "LoreReader", EVENT_PLAYER_ACTIVATED)
-		ZO_PostHook(LORE_READER, "ApplyMedium", function(reader)
-			local bodyFace, bodySize, bodyStyle = reader.firstPage.body:GetFontInfo()
-			local mapping = fontMap[bodyFace]
+		ZO_PostHook(LORE_READER, "ApplyMedium", function(reader, medium, isGamepad)
+			local titleFontName, titleFontSize, titleFontStyle,
+				bodyFontName, bodyFontSize, bodyFontStyle = GetBookMediumFontInfo(medium, isGamepad)
+			local mapping = fontMap[bodyFontName]
 			if not mapping then return end
 
 			local newFont = FC.SV[mapping.font]
 			local scale = tonumber(FC.SV[mapping.scale]) or 1
 
-			local newBodySize = math.floor(bodySize * scale)
+			local newBodySize = math.floor(bodyFontSize * scale)
 			local bodyFontString = newFont .. "|" .. newBodySize
-			if bodyStyle and bodyStyle ~= "" then
-				bodyFontString = bodyFontString .. "|" .. bodyStyle
+			if bodyFontStyle and bodyFontStyle ~= "" then
+				bodyFontString = bodyFontString .. "|" .. bodyFontStyle
 			end
 			reader.firstPage.body:SetFont(bodyFontString)
 			reader.secondPage.body:SetFont(bodyFontString)
 
-			local titleFace, titleSize, titleStyle = reader.title:GetFontInfo()
-			local newTitleSize = math.floor(titleSize * scale)
+			local newTitleSize = math.floor(titleFontSize * scale)
 			local titleFontString = newFont .. "|" .. newTitleSize
-			if titleStyle and titleStyle ~= "" then
-				titleFontString = titleFontString .. "|" .. titleStyle
+			if titleFontStyle and titleFontStyle ~= "" then
+				titleFontString = titleFontString .. "|" .. titleFontStyle
 			end
 			reader.title:SetFont(titleFontString)
 		end)
