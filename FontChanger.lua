@@ -1,5 +1,4 @@
-local FC = FontChanger or {}
-local LAM2 = LibAddonMenu2
+local FC = assert(FontChanger, "FontChanger global table not found — check load order in FontChanger.txt")
 
 FC.name = "FontChanger"
 FC.version = "1.6"
@@ -8,61 +7,40 @@ function FC:SetUIFonts()
 	for key, value in zo_insecurePairs(_G) do
 		if (key):find("^Zo") and type(value) == "userdata" and value.SetFont then
 			local font = {value:GetFontInfo()}
-			-- DEFAULT USED AS REGULAR/CHAT FONT -- 
+
 			if (font[1] == "EsoUI/Common/Fonts/Univers57.slug") or (font[1] == "$(MEDIUM_FONT)") then
 				font[1] = self.SV.menu_font
-				-- Default Size: 1 --
 				font[2] = font[2] * self.SV.menu_font_scale
 				value:SetFont(table.concat(font, "|"))
-			end
-			-- DEFAULT USED AS BOLD FONT --
-			if (font[1] == "EsoUI/Common/Fonts/Univers67.slug") or (font[1] == "$(BOLD_FONT)") then
+			elseif (font[1] == "EsoUI/Common/Fonts/Univers67.slug") or (font[1] == "$(BOLD_FONT)") then
 				font[1] = self.SV.menu_bold_font
-				-- Default Size: 0.9 --
 				font[2] = font[2] * self.SV.menu_bold_font_scale
 				value:SetFont(table.concat(font, "|"))
-			end
-			-- DEFAULT USED AS BOOK FONT --
-			if (font[1] == "EsoUI/Common/Fonts/ProseAntiquePSMT.slug") or (font[1] == "$(ANTIQUE_FONT)") then
-				font[1] = self.SV.book_font
-				-- Default Size: 0.9 --
-				font[2] = font[2] * self.SV.book_font_scale
-				value:SetFont(table.concat(font, "|"))
-			end
-			-- DEFAULT USED AS HANDWRITTEN FONT --
-			if (font[1] == "EsoUI/Common/Fonts/Handwritten_Bold.slug") or (font[1] == "$(HANDWRITTEN_FONT)") then
-				font[1] = self.SV.letter_font
-				-- Default Size: 1 --
-				font[2] = font[2] * self.SV.letter_font_scale
-				value:SetFont(table.concat(font, "|"))
-			end
-			-- DEFAULT USED AS STONE TABLET FONT --
-			if (font[1] == "EsoUI/Common/Fonts/TrajanPro-Regular.slug") or (font[1] == "$(STONE_TABLET_FONT)") then
-				font[1] = self.SV.tablet_font
-				-- Default Size: 1 --
-				font[2] = font[2] * self.SV.tablet_font_scale
-				value:SetFont(table.concat(font, "|"))
-			end
-
-			if self.SV.gamepad_fonts_enabled then
-				-- DEFAULT USED AS GAMEPAD_LIGHT_FONT --
+			elseif self.SV.lore_fonts_enabled then
+				if (font[1] == "EsoUI/Common/Fonts/ProseAntiquePSMT.slug") or (font[1] == "$(ANTIQUE_FONT)") then
+					font[1] = self.SV.book_font
+					font[2] = font[2] * self.SV.book_font_scale
+					value:SetFont(table.concat(font, "|"))
+				elseif (font[1] == "EsoUI/Common/Fonts/Handwritten_Bold.slug") or (font[1] == "$(HANDWRITTEN_FONT)") then
+					font[1] = self.SV.letter_font
+					font[2] = font[2] * self.SV.letter_font_scale
+					value:SetFont(table.concat(font, "|"))
+				elseif (font[1] == "EsoUI/Common/Fonts/TrajanPro-Regular.slug") or (font[1] == "$(STONE_TABLET_FONT)") then
+					font[1] = self.SV.tablet_font
+					font[2] = font[2] * self.SV.tablet_font_scale
+					value:SetFont(table.concat(font, "|"))
+				end
+			elseif self.SV.gamepad_fonts_enabled then
 				if (font[1] == "EsoUI/Common/Fonts/FTN47.slug") or (font[1] == "$(GAMEPAD_LIGHT_FONT)") then
 					font[1] = self.SV.menu_font
-					-- Default Size: 1 --
 					font[2] = font[2] * self.SV.menu_font_scale
 					value:SetFont(table.concat(font, "|"))
-				end
-				-- DEFAULT USED AS GAMEPAD_MEDIUM_FONT --
-				if (font[1] == "EsoUI/Common/Fonts/FTN57.slug") or (font[1] == "$(GAMEPAD_MEDIUM_FONT)") then
+				elseif (font[1] == "EsoUI/Common/Fonts/FTN57.slug") or (font[1] == "$(GAMEPAD_MEDIUM_FONT)") then
 					font[1] = self.SV.menu_font
-					-- Default Size: 1 --
 					font[2] = font[2] * self.SV.menu_font_scale
 					value:SetFont(table.concat(font, "|"))
-				end
-				-- DEFAULT USED AS GAMEPAD_BOLD_FONT --
-				if (font[1] == "EsoUI/Common/Fonts/FTN87.slug") or (font[1] == "$(GAMEPAD_BOLD_FONT)") then
+				elseif (font[1] == "EsoUI/Common/Fonts/FTN87.slug") or (font[1] == "$(GAMEPAD_BOLD_FONT)") then
 					font[1] = self.SV.menu_bold_font
-					-- Default Size: 1 --
 					font[2] = font[2] * self.SV.menu_bold_font_scale
 					value:SetFont(table.concat(font, "|"))
 				end
@@ -72,65 +50,64 @@ function FC:SetUIFonts()
 end
 
 function FC:SetNameplateFont(style, size)
-	local Font, CurrentFontStyle
-	local NewFontAndSize = (self.SV.nameplate_font .. size)
+	local newFontAndSize = self.SV.nameplate_font .. "|" .. size .. "|"
 
-	-- d("SetNameplateFont, gamepad mode:" .. tostring(IsInGamepadPreferredMode()))
-
-	-- Gamepad Mode  -- 
 	if IsInGamepadPreferredMode() then
 		if not self.SV.gamepad_fonts_enabled then
-			SetNameplateGamepadFont("EsoUI/Common/Fonts/FTN57.slug|30|", self.SV.default_nameplate_style)
+			SetNameplateGamepadFont("EsoUI/Common/Fonts/FTN57.slug|30|", self.defaults.nameplate_style)
 			return
 		end
-		CurrentFontAndSize, CurrentFontStyle = GetNameplateGamepadFont()
-		if CurrentFontAndSize ~= NewFontAndSize or CurrentFontStyle ~= style then
-			SetNameplateGamepadFont(self.SV.nameplate_font .. "|" .. size .. "|", style)
+		local currentFont, currentStyle = GetNameplateGamepadFont()
+		if currentFont ~= newFontAndSize or currentStyle ~= style then
+			SetNameplateGamepadFont(newFontAndSize, style)
 		end
-		-- Keyboard Mode --
 	else
-		CurrentFontAndSize, CurrentFontStyle = GetNameplateKeyboardFont()
-		if CurrentFontAndSize ~= NewFontAndSize or CurrentFontStyle ~= style then
-			SetNameplateKeyboardFont(self.SV.nameplate_font .. "|" .. size .. "|", style)
+		local currentFont, currentStyle = GetNameplateKeyboardFont()
+		if currentFont ~= newFontAndSize or currentStyle ~= style then
+			SetNameplateKeyboardFont(newFontAndSize, style)
 		end
 	end
 end
 
 function FC:SetSCTFont(style, size)
-	local CurrentFontAndSize, CurrentFontStyle
-	local NewFontAndSize = (self.SV.sct_font .. size)
+	local newFontAndSize = self.SV.sct_font .. "|" .. size .. "|"
 
-	-- d("SetSCTFont, gamepad mode:" .. tostring(IsInGamepadPreferredMode()))
-
-	-- Gamepad Mode -- 
 	if IsInGamepadPreferredMode() then
 		if not self.SV.gamepad_fonts_enabled then
-			SetSCTGamepadFont("EsoUI/Common/Fonts/FTN87.slug|52|", self.SV.default_sct_style)
+			SetSCTGamepadFont("EsoUI/Common/Fonts/FTN87.slug|52|", self.defaults.sct_style)
 			return
 		end
-		CurrentFontAndSize, CurrentFontStyle = GetSCTGamepadFont()
-		if CurrentFontAndSize ~= NewFontAndSize or CurrentFontStyle ~= style then
-			SetSCTGamepadFont(self.SV.sct_font .. "|" .. size .. "|", style)
+		local currentFont, currentStyle = GetSCTGamepadFont()
+		if currentFont ~= newFontAndSize or currentStyle ~= style then
+			SetSCTGamepadFont(newFontAndSize, style)
 		end
-		-- Keyboard Mode --
 	else
-		CurrentFontAndSize, CurrentFontStyle = GetSCTKeyboardFont()
-		if CurrentFontAndSize ~= NewFontAndSize or CurrentFontStyle ~= style then
-			SetSCTKeyboardFont(self.SV.sct_font .. "|" .. size .. "|", style)
+		local currentFont, currentStyle = GetSCTKeyboardFont()
+		if currentFont ~= newFontAndSize or currentStyle ~= style then
+			SetSCTKeyboardFont(newFontAndSize, style)
 		end
 	end
 end
 
 function FC:ChangeChatFonts()
-	local fontStyle = self.SV.chat_font
 	local fontSize = GetChatFontSize()
-	local fontWeight = self.SV.chat_style
-	local fontName = string.format("%s|$(KB_%s)|%s", fontStyle, fontSize, fontWeight)
+	local fontName = string.format("%s|$(KB_%s)|%s", self.SV.chat_font, fontSize, self.SV.chat_style)
 	-- Entry Box --
 	ZoFontEditChat:SetFont(fontName)
 	-- Chat Window --
 	ZoFontChat:SetFont(fontName)
-	-- Size --
+	-- Force existing chat buffers to pick up the new font
+	if CHAT_SYSTEM and CHAT_SYSTEM.containers then
+		for _, container in pairs(CHAT_SYSTEM.containers) do
+			if container.windows then
+				for _, window in ipairs(container.windows) do
+					if window.buffer then
+						window.buffer:SetFont(fontName)
+					end
+				end
+			end
+		end
+	end
 	CHAT_SYSTEM:SetFontSize(CHAT_SYSTEM.GetFontSizeFromSetting())
 end
 
@@ -144,16 +121,15 @@ function FC:HookLoreReader()
 	-- LORE_READER instance doesn't exist during EVENT_ADD_ON_LOADED; defer until all UI objects exist
 	EVENT_MANAGER:RegisterForEvent(self.name .. "LoreReader", EVENT_PLAYER_ACTIVATED, function()
 		EVENT_MANAGER:UnregisterForEvent(self.name .. "LoreReader", EVENT_PLAYER_ACTIVATED)
-		d("[FontChanger] LoreReader hook installed: " .. tostring(LORE_READER ~= nil))
 		ZO_PostHook(LORE_READER, "ApplyMedium", function(reader, medium, isGamepad)
 			local titleFontName, titleFontSize, titleFontStyle,
 				bodyFontName, bodyFontSize, bodyFontStyle = GetBookMediumFontInfo(medium, isGamepad)
-			d("[FontChanger] ApplyMedium fired — bodyFont: " .. tostring(bodyFontName) .. " mapped: " .. tostring(fontMap[bodyFontName] ~= nil))
+			if not FC.SV.lore_fonts_enabled then return end
 			local mapping = fontMap[bodyFontName]
 			if not mapping then return end
 
 			local newFont = FC.SV[mapping.font]
-			local scale = tonumber(FC.SV[mapping.scale]) or 1
+			local scale = FC.SV[mapping.scale] or 1
 
 			local newBodySize = math.floor(bodyFontSize * scale)
 			reader.firstPage.body:SetFont(ZO_CreateFontString(newFont, newBodySize, bodyFontStyle))
@@ -165,75 +141,13 @@ function FC:HookLoreReader()
 	end)
 end
 
-function FC:SetDefaults()
-	-- Set Defaults --
-
-	-- Fonts
-	if self.SV.menu_font == nil then
-		self.SV.menu_font = self.SV.default_menu_font
-	end
-	if self.SV.menu_bold_font == nil then
-		self.SV.menu_bold_font = self.SV.default_menu_bold_font
-	end
-	if self.SV.chat_font == nil then
-		self.SV.chat_font = self.SV.default_chat_font
-	end
-	if self.SV.nameplate_font == nil then
-		self.SV.nameplate_font = self.SV.default_nameplate_font
-	end
-	if self.SV.sct_font == nil then
-		self.SV.sct_font = self.SV.default_sct_font
-	end
-	if self.SV.book_font == nil then
-		self.SV.book_font = self.SV.default_book_font
-	end
-	if self.SV.letter_font == nil then
-		self.SV.letter_font = self.SV.default_letter_font
-	end
-	if self.SV.tablet_font == nil then
-		self.SV.tablet_font = self.SV.default_tablet_font
-	end
-
-	-- Scales
-	if self.SV.menu_font_scale == nil then
-		self.SV.menu_font_scale = self.SV.default_menu_font_scale
-	end
-	if self.SV.menu_bold_font_scale == nil then
-		self.SV.menu_bold_font_scale = self.SV.default_menu_bold_font_scale
-	end
-	if self.SV.book_font_scale == nil then
-		self.SV.book_font_scale = self.SV.default_book_font_scale
-	end
-	if self.SV.letter_font_scale == nil then
-		self.SV.letter_font_scale = self.SV.default_letter_font_scale
-	end
-	if self.SV.tablet_font_scale == nil then
-		self.SV.tablet_font_scale = self.SV.default_tablet_font_scale
-	end
-
-	-- Sizes
-	if self.SV.nameplate_size == nil then
-		self.SV.nameplate_size = self.SV.default_nameplate_size
-	end
-	if self.SV.sct_size == nil then
-		self.SV.sct_size = self.SV.default_sct_size
-	end
-
-	-- Styles
-	if self.SV.nameplate_style == nil then
-		self.SV.nameplate_style = self.SV.default_nameplate_style
-	end
-	if self.SV.sct_style == nil then
-		self.SV.sct_style = self.SV.default_sct_style
-	end
-	if self.SV.chat_style == nil then
-		self.SV.chat_style = self.SV.default_chat_style
-	end
-
-	-- Misc
-	if self.SV.gamepad_fonts_enabled == nil then
-		self.SV.gamepad_fonts_enabled = self.SV.default_gamepad_fonts_enabled
-	end
+function FC:RestoreVanillaFonts()
+	if not self.SV.vanilla_nameplate then return end
+	SetNameplateKeyboardFont(self.SV.vanilla_nameplate.font, self.SV.vanilla_nameplate.style)
+	SetNameplateGamepadFont(self.SV.vanilla_nameplate_gamepad.font, self.SV.vanilla_nameplate_gamepad.style)
+	SetSCTKeyboardFont(self.SV.vanilla_sct.font, self.SV.vanilla_sct.style)
+	SetSCTGamepadFont(self.SV.vanilla_sct_gamepad.font, self.SV.vanilla_sct_gamepad.style)
+	d("[FontChanger] Nameplate and SCT fonts restored to vanilla.")
 end
 
 function FC:SetupEvents(toggle)
@@ -256,25 +170,31 @@ function FC:SetupEvents(toggle)
 	end
 end
 
+local SV_VERSION = 1
+
 function FC:Initialize()
 	if self.initialized then return end
 	self.initialized = true
 
-	local manager = GetAddOnManager()
-
-	for i = 1, manager:GetNumAddOns() do
-		local name, _, _, _, _, state = manager:GetAddOnInfo(i)
-		if name == self.name then
-			self.version = manager:GetAddOnVersion(i)
-		end
-	end
-
 	-- Load Saved Variables --
-	self.SV = ZO_SavedVars:NewAccountWide("FontChangerSettings", self.version, "Settings", self.defaults)
+	self.SV = ZO_SavedVars:NewAccountWide("FontChangerSettings", SV_VERSION, "Settings", self.defaults)
+
+	-- Capture vanilla nameplate/SCT settings before the addon overwrites them.
+	-- These persist in game settings even after the addon is disabled, so we
+	-- need to remember the originals to provide a reset path.
+	if not self.SV.vanilla_nameplate then
+		local npFont, npStyle = GetNameplateKeyboardFont()
+		local npGpFont, npGpStyle = GetNameplateGamepadFont()
+		self.SV.vanilla_nameplate = { font = npFont, style = npStyle }
+		self.SV.vanilla_nameplate_gamepad = { font = npGpFont, style = npGpStyle }
+		local sctFont, sctStyle = GetSCTKeyboardFont()
+		local sctGpFont, sctGpStyle = GetSCTGamepadFont()
+		self.SV.vanilla_sct = { font = sctFont, style = sctStyle }
+		self.SV.vanilla_sct_gamepad = { font = sctGpFont, style = sctGpStyle }
+	end
 
 	-- Run Functions --
 	self:SetupEvents(true)
-	self:SetDefaults()
 	self:SetNameplateFont(self.SV.nameplate_style, self.SV.nameplate_size)
 	self:SetSCTFont(self.SV.sct_style, self.SV.sct_size)
 	self:SetUIFonts()
@@ -287,9 +207,8 @@ function FC.OnLoad(event, addonName)
 		return
 	end
 	EVENT_MANAGER:UnregisterForEvent(FC.name, EVENT_ADD_ON_LOADED, FC.OnLoad)
-	FC:InitializeAddonMenu()
 	FC:Initialize()
+	FC:InitializeAddonMenu()
 end
 
 EVENT_MANAGER:RegisterForEvent(FC.name, EVENT_ADD_ON_LOADED, FC.OnLoad)
-
