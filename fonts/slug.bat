@@ -41,7 +41,8 @@ if exist %output_file% del %output_file%
 :: String builder
 set list="-- DON'T EDIT THIS FILE DIRECTLY --"
 set list=%list%;"-- technically you can, but you should really place your"
-set list=%list%;"-- font files in the fonts/ttfs directory and re-run fonts/slug.bat"
+set list=%list%;"-- font files in the fonts/ttfs directory and re-run fonts/slug.bat (Windows)"
+set list=%list%;"-- or fonts/slug.sh (Linux)"
 set list=%list%;"local FC = FontChanger or {}"
 set list=%list%;"FC.CUSTOM_FONT_CHOICES = {"
 
