@@ -99,7 +99,7 @@ function FC:InitializeAddonMenu()
 			applyUI, RELOAD),
 		dropdown("menu_style", "UI Font Style",
 			"Changes the style of UI fonts.",
-			FC.FONTSTYLE_CHOICES, FC.FONTSTYLE_VALUES, applyUI, { warning = "Reload UI Required.", scrollable = false }),
+			FC.UI_FONTSTYLE_CHOICES, FC.UI_FONTSTYLE_VALUES, applyUI, { warning = "Reload UI Required.", scrollable = false }),
 
 		-- Books / Letters / Tablets --
 		{ type = "header", name = "BOOKS / LETTERS / TABLETS" },

@@ -11,12 +11,12 @@ function FC:SetUIFonts()
 			if (font[1] == "EsoUI/Common/Fonts/Univers57.slug") or (font[1] == "$(MEDIUM_FONT)") then
 				font[1] = self.SV.menu_font
 				font[2] = font[2] * self.SV.menu_font_scale
-				font[3] = self.SV.menu_style
+				if self.SV.menu_style ~= "" then font[3] = self.SV.menu_style end
 				value:SetFont(table.concat(font, "|"))
 			elseif (font[1] == "EsoUI/Common/Fonts/Univers67.slug") or (font[1] == "$(BOLD_FONT)") then
 				font[1] = self.SV.menu_bold_font
 				font[2] = font[2] * self.SV.menu_bold_font_scale
-				font[3] = self.SV.menu_style
+				if self.SV.menu_style ~= "" then font[3] = self.SV.menu_style end
 				value:SetFont(table.concat(font, "|"))
 			elseif self.SV.lore_fonts_enabled then
 				if (font[1] == "EsoUI/Common/Fonts/ProseAntiquePSMT.slug") or (font[1] == "$(ANTIQUE_FONT)") then
@@ -36,17 +36,17 @@ function FC:SetUIFonts()
 				if (font[1] == "EsoUI/Common/Fonts/FTN47.slug") or (font[1] == "$(GAMEPAD_LIGHT_FONT)") then
 					font[1] = self.SV.menu_font
 					font[2] = font[2] * self.SV.menu_font_scale
-					font[3] = self.SV.menu_style
+					if self.SV.menu_style ~= "" then font[3] = self.SV.menu_style end
 					value:SetFont(table.concat(font, "|"))
 				elseif (font[1] == "EsoUI/Common/Fonts/FTN57.slug") or (font[1] == "$(GAMEPAD_MEDIUM_FONT)") then
 					font[1] = self.SV.menu_font
 					font[2] = font[2] * self.SV.menu_font_scale
-					font[3] = self.SV.menu_style
+					if self.SV.menu_style ~= "" then font[3] = self.SV.menu_style end
 					value:SetFont(table.concat(font, "|"))
 				elseif (font[1] == "EsoUI/Common/Fonts/FTN87.slug") or (font[1] == "$(GAMEPAD_BOLD_FONT)") then
 					font[1] = self.SV.menu_bold_font
 					font[2] = font[2] * self.SV.menu_bold_font_scale
-					font[3] = self.SV.menu_style
+					if self.SV.menu_style ~= "" then font[3] = self.SV.menu_style end
 					value:SetFont(table.concat(font, "|"))
 				end
 			end
