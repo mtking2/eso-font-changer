@@ -7,8 +7,8 @@ Primarily, this fork aims to simplify the process of adding new fonts to the add
 It also adds some new options to the addon settings to more easily change the fonts in game.
 
 <p align="center">
-	<img src="assets/settings_1.jpg" width=80% />
-	<img src="assets/settings_2.jpg" width=80% />
+	<img src="assets/settings_1.png" width=80% />
+	<img src="assets/settings_2.png" width=80% />
 </p>
 
 
@@ -40,4 +40,3 @@ ln -s ~/.steam/steam/compatibilitytools.d/GE-ProtonX-XX/files/bin/wine ~/.local/
 ```
 
 Run `FontChanger/fonts/slug.sh` to convert fonts.
-
