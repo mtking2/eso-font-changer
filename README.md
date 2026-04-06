@@ -2,7 +2,7 @@
 
 This is a fork of the [FontChanger](https://www.esoui.com/downloads/fileinfo.php?id=3728) addon by Ferrety (and later modifications by Antisenil)
 
-Primarily, this fork aims to simplify the process of adding new fonts to the addon by providing a batch script to generate the .slug files for you. See detailed instructions below.
+Primarily, this fork aims to simplify the process of adding new fonts to the addon by providing conversion scripts (Windows batch and Linux shell) to generate the .slug files for you. See detailed instructions below.
 
 It also adds some new options to the addon settings to more easily change the fonts in game.
 
