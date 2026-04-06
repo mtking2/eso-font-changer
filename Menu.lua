@@ -97,6 +97,9 @@ function FC:InitializeAddonMenu()
 		slider("menu_bold_font_scale", "UI Bold Font Scale",
 			"Changes the size for bold font, most texts in ESO use this font.",
 			applyUI, RELOAD),
+		dropdown("menu_style", "UI Font Style",
+			"Changes the style of UI fonts.",
+			FC.FONTSTYLE_CHOICES, FC.FONTSTYLE_VALUES, applyUI, { warning = "Reload UI Required.", scrollable = false }),
 
 		-- Books / Letters / Tablets --
 		{ type = "header", name = "BOOKS / LETTERS / TABLETS" },
