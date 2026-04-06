@@ -1,6 +1,7 @@
 fonts/*
 
 !fonts/*.bat
+!fonts/*.sh
 !fonts/ttfs
 !fonts/slugs
 
@@ -12,6 +13,7 @@ fonts/ttfs/*
 !fonts/LICENSING.txt
 
 releases/
+tmp/
 
 # Compiled Lua sources
 luac.out
