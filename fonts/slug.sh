@@ -58,7 +58,7 @@ for ttf in "${ttf_files[@]}"; do
     echo "Generating ${name}.slug"
     if ! wine "$slugfont_exe" "$ttf" -o "slugs/${name}.slug" 2>/dev/null; then
         echo "  Warning: failed to convert $ttf"
-        ((failed++))
+        ((++failed))
     fi
 done
 
