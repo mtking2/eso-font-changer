@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.6 (zetauma)
+* bumped API version to 101049
+* major refactor: data-driven settings menu, proper defaults, live-apply on all settings
+* added UI Font Style dropdown (bold, shadow, outline, etc.)
+* fixed book/letter/tablet fonts by hooking LoreReader:ApplyMedium
+* rewrote PerfectPixel compatibility layer (handles PP loading before FC)
+* added Linux font conversion script (`fonts/slug.sh`) using Wine
+* fixed SCT and nameplate font application
+
 ## 1.5 (zetauma)
 * improved support for gamepad mode
 * improved support for PerfectPixel (some compatibility refactored from 1.3)

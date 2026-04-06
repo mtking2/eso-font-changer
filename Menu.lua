@@ -1,10 +1,6 @@
-local FC = FontChanger or {}
+local FC = assert(FontChanger, "FontChanger global table not found — check load order in FontChanger.txt")
 local LAM2 = LibAddonMenu2
---[[
-function FC:DefaultEverything()
-	self:SetFont(self.defaults.font, self.defaults.style, self.defaults.size)
-end
-]] --
+
 function FC:InitializeAddonMenu()
 	local panelData = {
 		type = "panel",
@@ -17,433 +13,183 @@ function FC:InitializeAddonMenu()
 		registerForDefaults = true
 	}
 
-	local fontChoices = FC.DEFAULT_FONT_CHOICES
+	-- Build merged font lists (copies to avoid mutating the constant arrays)
+	local fontChoices = {}
+	local fontValues = {}
+	for i, v in ipairs(FC.DEFAULT_FONT_CHOICES) do
+		fontChoices[i] = v
+		fontValues[i] = FC.DEFAULT_FONT_VALUES[i]
+	end
 	for _, v in ipairs(FC.CUSTOM_FONT_CHOICES) do
 		table.insert(fontChoices, v)
 	end
-
-	local fontValues = FC.DEFAULT_FONT_VALUES
 	for _, v in ipairs(FC.CUSTOM_FONT_VALUES) do
 		table.insert(fontValues, v)
 	end
 
-	local optionsData = {}
+	-- Shared apply callbacks
+	local function applyUI() self:SetUIFonts() end
+	local function applyNameplate() self:SetNameplateFont(self.SV.nameplate_style, self.SV.nameplate_size) end
+	local function applySCT() self:SetSCTFont(self.SV.sct_style, self.SV.sct_size) end
+	local function applyChat() self:ChangeChatFonts() end
 
-	table.insert(optionsData, {
-		type = "header",
-		name = "Menu/UI"
-	})
+	-- Helper to build a LAM2 dropdown from a saved-variable key
+	local function dropdown(svKey, name, tooltip, choices, choicesValues, applyFunc, opts)
+		opts = opts or {}
+		return {
+			type = "dropdown",
+			name = name,
+			choices = choices,
+			choicesValues = choicesValues,
+			tooltip = tooltip,
+			getFunc = function() return self.SV[svKey] end,
+			setFunc = function(value)
+				self.SV[svKey] = value
+				applyFunc()
+			end,
+			default = self.defaults[svKey],
+			warning = opts.warning,
+			scrollable = opts.scrollable ~= false,
+			disabled = opts.disabled,
+		}
+	end
 
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "UI Font",
-		choices = fontChoices,
-		choicesValues = fontValues,
-		tooltip = "Changes normal font, mostly used in descriptions (mouseover texts) and in the eso settings menu.",
-		getFunc = function()
-			return self.SV.menu_font
-		end,
-		setFunc = function(menu_font)
-			self.SV.menu_font = menu_font
-			self:SetUIFonts()
-		end,
-		default = function()
-			self:SetUIFonts()
-			return self.defaults.default_menu_font
-		end,
-		warning = "Reload UI Required.",
-		scrollable = true
-	})
+	-- Helper to build a LAM2 slider from a saved-variable key
+	local function slider(svKey, name, tooltip, applyFunc, opts)
+		opts = opts or {}
+		return {
+			type = "slider",
+			name = name,
+			tooltip = tooltip,
+			min = opts.min or 0.1,
+			max = opts.max or 2,
+			step = opts.step or 0.1,
+			decimals = opts.decimals or 1,
+			getFunc = function() return self.SV[svKey] end,
+			setFunc = function(value)
+				self.SV[svKey] = value
+				applyFunc()
+			end,
+			default = self.defaults[svKey],
+			warning = opts.warning,
+			disabled = opts.disabled,
+		}
+	end
 
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "UI Font Scale",
-		choices = FC.FONT_SCALING_CHOICES,
-		choicesValues = FC.FONT_SCALING_VALUES,
-		tooltip = "Changes the size for normal font, mostly used in descriptions (mouseover texts) and in the eso settings menu.",
-		getFunc = function()
-			return self.SV.menu_font_scale
-		end,
-		setFunc = function(menu_font_scale)
-			self.SV.menu_font_scale = menu_font_scale
-			self:SetUIFonts()
-		end,
-		default = function()
-			self:SetUIFonts()
-			return self.defaults.default_menu_font_scale
-		end,
-		warning = "Reload UI Required.",
-		scrollable = true
-	})
+	local RELOAD = { warning = "Reload UI Required." }
+	local NO_SCROLL = { scrollable = false }
+	local loreDisabled = function() return not self.SV.lore_fonts_enabled end
+	local LORE_WARN = { warning = "Takes effect on next book open. Reload UI for full effect.", disabled = loreDisabled }
+	local LORE_SLIDER = { warning = "Takes effect on next book open. Reload UI for full effect.", disabled = loreDisabled }
 
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "UI Bold Font",
-		choices = fontChoices,
-		choicesValues = fontValues,
-		tooltip = "Changes the bold font, most texts in ESO use this font.",
-		getFunc = function()
-			return self.SV.menu_bold_font
-		end,
-		setFunc = function(menu_bold_font)
-			self.SV.menu_bold_font = menu_bold_font
-			self:SetUIFonts()
-		end,
-		default = function()
-			self:SetUIFonts()
-			return self.defaults.default_menu_bold_font
-		end,
-		warning = "Reload UI Required.",
-		scrollable = true
-	})
+	local optionsData = {
+		-- Menu/UI --
+		{ type = "header", name = "Menu/UI" },
+		dropdown("menu_font", "UI Font",
+			"Changes normal font, mostly used in descriptions (mouseover texts) and in the eso settings menu.",
+			fontChoices, fontValues, applyUI, RELOAD),
+		slider("menu_font_scale", "UI Font Scale",
+			"Changes the size for normal font, mostly used in descriptions (mouseover texts) and in the eso settings menu.",
+			applyUI, RELOAD),
+		dropdown("menu_bold_font", "UI Bold Font",
+			"Changes the bold font, most texts in ESO use this font.",
+			fontChoices, fontValues, applyUI, RELOAD),
+		slider("menu_bold_font_scale", "UI Bold Font Scale",
+			"Changes the size for bold font, most texts in ESO use this font.",
+			applyUI, RELOAD),
+		dropdown("menu_style", "UI Font Style",
+			"Changes the style of UI fonts.",
+			FC.UI_FONTSTYLE_CHOICES, FC.UI_FONTSTYLE_VALUES, applyUI, { warning = "Reload UI Required.", scrollable = false }),
 
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "UI Bold Font Scale",
-		choices = FC.FONT_SCALING_CHOICES,
-		choicesValues = FC.FONT_SCALING_VALUES,
-		tooltip = "Changes the size for bold font, most texts in ESO use this font.",
-		getFunc = function()
-			return self.SV.menu_bold_font_scale
-		end,
-		setFunc = function(menu_bold_font_scale)
-			self.SV.menu_bold_font_scale = menu_bold_font_scale
-			self:SetUIFonts()
-		end,
-		default = function()
-			self:SetUIFonts()
-			return self.defaults.default_menu_bold_font_scale
-		end,
-		warning = "Reload UI Required.",
-		scrollable = true
-	})
+		-- Books / Letters / Tablets --
+		{ type = "header", name = "BOOKS / LETTERS / TABLETS" },
+		{
+			type = "checkbox",
+			name = "Enable Lore Font Replacement",
+			tooltip = "When enabled, books, letters, and stone tablets use the fonts selected below. When disabled, vanilla fonts are used.",
+			default = self.defaults.lore_fonts_enabled,
+			warning = "Reload UI Required.",
+			getFunc = function() return self.SV.lore_fonts_enabled end,
+			setFunc = function(value) self.SV.lore_fonts_enabled = value end,
+		},
+		{
+			type = "submenu",
+			name = "Lore Font Settings",
+			controls = {
+				dropdown("book_font", "Book Font",
+					"Changes the font used for books.",
+					fontChoices, fontValues, applyUI, LORE_WARN),
+				slider("book_font_scale", "Book Font Scale",
+					"Changes the text size of books.",
+					applyUI, LORE_SLIDER),
+				dropdown("letter_font", "Letter Font",
+					"Changes the font used for letters and handwritten notes.",
+					fontChoices, fontValues, applyUI, LORE_WARN),
+				slider("letter_font_scale", "Letter Font Scale",
+					"Changes the text size of letters and handwritten notes.",
+					applyUI, LORE_SLIDER),
+				dropdown("tablet_font", "Tablet Font",
+					"Changes the font used for stone tablets.",
+					fontChoices, fontValues, applyUI, LORE_WARN),
+				slider("tablet_font_scale", "Tablet Font Scale",
+					"Changes the text size of stone tablets.",
+					applyUI, LORE_SLIDER),
+			},
+		},
 
-	table.insert(optionsData, {
-		type = "header",
-		name = "BOOKS / LETTERS / TABLETS"
-	})
+		-- Nameplates --
+		{ type = "header", name = "Nameplates" },
+		dropdown("nameplate_font", "Nameplate Font",
+			"Changes the font for all nameplates.",
+			fontChoices, fontValues, applyNameplate),
+		dropdown("nameplate_size", "Nameplate Font Size",
+			"Changes the size of all nameplates.",
+			FC.FONTSIZE_CHOICES, FC.FONTSIZE_VALUES, applyNameplate),
+		dropdown("nameplate_style", "Nameplate Font Style",
+			"Changes the style of nameplates.",
+			FC.FONTSTYLE_CHOICES, FC.FONTSTYLE_VALUES, applyNameplate, NO_SCROLL),
 
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "Book Font",
-		choices = fontChoices,
-		choicesValues = fontValues,
-		tooltip = "Changes the text size of books etc",
-		getFunc = function()
-			return self.SV.book_font
-		end,
-		setFunc = function(book_font)
-			self.SV.book_font = book_font
-			self:SetUIFonts()
-		end,
-		default = function()
-			self:SetUIFonts()
-			return self.defaults.default_book_font
-		end,
-		warning = "Reload UI Required.",
-		scrollable = true
-	})
+		-- Scrolling Combat Text --
+		{ type = "header", name = "Scrolling Combat Text (SCT)" },
+		dropdown("sct_font", "SCT Font",
+			"Changes the font of scrolling combat text (SCT).",
+			fontChoices, fontValues, applySCT),
+		dropdown("sct_size", "SCT Font Size",
+			"Changes the size of scrolling combat text (SCT).",
+			FC.FONTSIZE_CHOICES, FC.FONTSIZE_VALUES, applySCT),
+		dropdown("sct_style", "SCT Font Style",
+			"Changes the style of SCT.",
+			FC.FONTSTYLE_CHOICES, FC.FONTSTYLE_VALUES, applySCT, NO_SCROLL),
 
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "Book Font Scale",
-		choices = FC.FONT_SCALING_CHOICES,
-		choicesValues = FC.FONT_SCALING_VALUES,
-		tooltip = "Changes the text size of books etc",
-		getFunc = function()
-			return self.SV.book_font_scale
-		end,
-		setFunc = function(book_font_scale)
-			self.SV.book_font_scale = book_font_scale
-			self:SetUIFonts()
-		end,
-		default = function()
-			self:SetUIFonts()
-			return self.defaults.default_book_font_scale
-		end,
-		warning = "Reload UI Required.",
-		scrollable = true
-	})
+		-- Chat --
+		{ type = "header", name = "Chat" },
+		dropdown("chat_font", "Chat Font",
+			"Changes the font of the chat window.",
+			fontChoices, fontValues, applyChat),
+		dropdown("chat_style", "Chat Font Style",
+			"Changes the style of chat font.",
+			FC.FONTWEIGHT_CHOICES, FC.FONTWEIGHT_VALUES, applyChat, NO_SCROLL),
 
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "Letter Font",
-		choices = fontChoices,
-		choicesValues = fontValues,
-		tooltip = "Changes the text size of letters or handwritten notes.",
-		getFunc = function()
-			return self.SV.letter_font
-		end,
-		setFunc = function(letter_font)
-			self.SV.letter_font = letter_font
-			self:SetUIFonts()
-		end,
-		default = function()
-			self:SetUIFonts()
-			return self.defaults.default_letter_font
-		end,
-		warning = "Reload UI Required.",
-		scrollable = true
-	})
+		-- Utilities --
+		{ type = "header", name = "Utilities" },
+		{
+			type = "button",
+			name = "Restore Vanilla Nameplate & SCT Fonts",
+			tooltip = "Resets nameplate and scrolling combat text fonts to the game defaults that were active before FontChanger was installed. Use this before disabling the addon, as these settings persist in the game even without the addon.",
+			func = function() self:RestoreVanillaFonts() end,
+		},
 
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "Letter Font Scale",
-		choices = FC.FONT_SCALING_CHOICES,
-		choicesValues = FC.FONT_SCALING_VALUES,
-		tooltip = "Changes the text size of books etc",
-		getFunc = function()
-			return self.SV.letter_font_scale
-		end,
-		setFunc = function(letter_font_scale)
-			self.SV.letter_font_scale = letter_font_scale
-			self:SetUIFonts()
-		end,
-		default = function()
-			self:SetUIFonts()
-			return self.defaults.default_letter_font_scale
-		end,
-		warning = "Reload UI Required.",
-		scrollable = true
-	})
-
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "Tablet Font",
-		choices = fontChoices,
-		choicesValues = fontValues,
-		tooltip = "Changes the text size of stone tablets",
-		getFunc = function()
-			return self.SV.tablet_font
-		end,
-		setFunc = function(tablet_font)
-			self.SV.tablet_font = tablet_font
-			self:SetUIFonts()
-		end,
-		default = function()
-			self:SetUIFonts()
-			return self.defaults.default_tablet_font
-		end,
-		warning = "Reload UI Required.",
-		scrollable = true
-	})
-
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "Tablet Font Scale",
-		choices = FC.FONT_SCALING_CHOICES,
-		choicesValues = FC.FONT_SCALING_VALUES,
-		tooltip = "Changes the text size of stone tablets",
-		getFunc = function()
-			return self.SV.tablet_font_scale
-		end,
-		setFunc = function(tablet_font_scale)
-			self.SV.tablet_font_scale = tablet_font_scale
-			self:SetUIFonts()
-		end,
-		default = function()
-			self:SetUIFonts()
-			return self.defaults.default_tablet_font_scale
-		end,
-		warning = "Reload UI Required.",
-		scrollable = true
-	})
-
-	table.insert(optionsData, {
-		type = "header",
-		name = "Nameplates"
-	})
-
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "Nameplate Font",
-		choices = fontChoices,
-		choicesValues = fontValues,
-		tooltip = "Changes the font for all nameplates.",
-		getFunc = function()
-			return self.SV.nameplate_font
-		end,
-		setFunc = function(nameplate_font)
-			self.SV.nameplate_font = nameplate_font
-			self:SetUIFonts()
-		end,
-		default = function()
-			self:SetUIFonts()
-			return self.defaults.default_nameplate_font
-		end,
-		warning = "Reload UI Required.",
-		scrollable = true
-	})
-
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "Nameplate Font Size",
-		choices = FC.FONTSIZE_CHOICES,
-		choicesValues = FC.FONTSIZE_VALUES,
-		tooltip = "Changes the size of all nameplates.",
-		getFunc = function()
-			return self.SV.nameplate_size
-		end,
-		setFunc = function(nameplate_size)
-			self.SV.nameplate_size = nameplate_size
-			self:SetNameplateFont(self.SV.nameplate_style, self.SV.nameplate_size)
-		end,
-		default = function()
-			self:SetNameplateFont(self.defaults.default_nameplate_style, self.defaults.default_nameplate_size)
-			return self.defaults.default_nameplate_size
-		end,
-		scrollable = true
-	})
-
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "Nameplate Font Style",
-		choices = FC.FONTSTYLE_CHOICES,
-		choicesValues = FC.FONTSTYLE_VALUES,
-		tooltip = "Changes the style of nameplates.",
-		getFunc = function()
-			return self.SV.nameplate_style
-		end,
-		setFunc = function(nameplate_style)
-			self.SV.nameplate_style = nameplate_style
-			self:SetNameplateFont(self.SV.nameplate_style, self.SV.nameplate_size)
-		end,
-		default = function()
-			self:SetNameplateFont(self.defaults.default_nameplate_style, self.defaults.default_nameplate_size)
-			return self.defaults.default_nameplate_style
-		end,
-		scrollable = false
-	})
-
-	table.insert(optionsData, {
-		type = "header",
-		name = "Scrolling Combat Text (SCT)"
-	})
-
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "SCT Font",
-		choices = fontChoices,
-		choicesValues = fontValues,
-		tooltip = "Changes the font of scrolling combat text (SCT).",
-		getFunc = function()
-			return self.SV.sct_font
-		end,
-		setFunc = function(sct_font)
-			self.SV.sct_font = sct_font
-			self:SetSCTFont(self.SV.sct_style, self.SV.sct_size)
-		end,
-		default = function()
-			self:SetSCTFont(self.defaults.default_sct_style, self.defaults.default_sct_size)
-			return self.defaults.default_sct_font
-		end,
-		scrollable = true
-	})
-
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "SCT Font Size",
-		choices = FC.FONTSIZE_CHOICES,
-		choicesValues = FC.FONTSIZE_VALUES,
-		tooltip = "Changes the size of scrolling combat text(SCT).",
-		getFunc = function()
-			return self.SV.sct_size
-		end,
-		setFunc = function(sct_size)
-			self.SV.sct_size = sct_size
-			self:SetSCTFont(self.SV.sct_style, self.SV.sct_size)
-		end,
-		default = function()
-			self:SetSCTFont(self.defaults.default_sct_style, self.defaults.default_sct_size)
-			return self.defaults.default_sct_size
-		end,
-		scrollable = true
-	})
-
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "SCT Font Style",
-		choices = FC.FONTSTYLE_CHOICES,
-		choicesValues = FC.FONTSTYLE_VALUES,
-		tooltip = "Changes the style of SCT",
-		getFunc = function()
-			return self.SV.sct_style
-		end,
-		setFunc = function(sct_style)
-			self.SV.sct_style = sct_style
-			self:SetSCTFont(self.SV.sct_style, self.SV.sct_size)
-		end,
-		default = function()
-			self:SetSCTFont(self.defaults.default_sct_style, self.defaults.default_sct_size)
-			return self.defaults.default_sct_style
-		end,
-		scrollable = false
-	})
-
-	table.insert(optionsData, {
-		type = "header",
-		name = "Chat"
-	})
-
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "Chat Font",
-		choices = fontChoices,
-		choicesValues = fontValues,
-		tooltip = "Changes the font of the chat window.",
-		getFunc = function()
-			return self.SV.chat_font
-		end,
-		setFunc = function(chat_font)
-			self.SV.chat_font = chat_font
-			self:ChangeChatFonts()
-		end,
-		default = function()
-			self:ChangeChatFonts()
-			return self.defaults.default_chat_font
-		end,
-		warning = "Reload UI Required.",
-		scrollable = true
-	})
-
-	table.insert(optionsData, {
-		type = "dropdown",
-		name = "Chat Font Style",
-		choices = FC.FONTWEIGHT_CHOICES,
-		choicesValues = FC.FONTWEIGHT_VALUES,
-		tooltip = "Changes the style of chat font.",
-		getFunc = function()
-			return self.SV.chat_style
-		end,
-		setFunc = function(chat_style)
-			self.SV.chat_style = chat_style
-			self:ChangeChatFonts()
-		end,
-		default = function()
-			self:ChangeChatFonts()
-			return self.defaults.default_chat_style
-		end,
-		warning = "Reload UI Required.",
-		scrollable = false
-	})
-
-	table.insert(optionsData, {
-		type = "header",
-		name = "Gamepad Mode"
-	})
-
-	table.insert(optionsData, {
-		type = "checkbox",
-		name = "Enable for Gamepad mode",
-		tooltip = "Enables the font settings when in Gamepad mode.",
-		default = true,
-		getFunc = function()
-			return self.SV.gamepad_fonts_enabled
-		end,
-		setFunc = function(gamepad_fonts_enabled)
-			self.SV.gamepad_fonts_enabled = gamepad_fonts_enabled
-		end,
-	})
+		-- Gamepad Mode --
+		{ type = "header", name = "Gamepad Mode" },
+		{
+			type = "checkbox",
+			name = "Enable for Gamepad mode",
+			tooltip = "Enables the font settings when in Gamepad mode.",
+			default = self.defaults.gamepad_fonts_enabled,
+			getFunc = function() return self.SV.gamepad_fonts_enabled end,
+			setFunc = function(value) self.SV.gamepad_fonts_enabled = value end,
+		},
+	}
 
 	LAM2:RegisterAddonPanel("FontChangerAddonOptions", panelData)
 	LAM2:RegisterOptionControls("FontChangerAddonOptions", optionsData)
