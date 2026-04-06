@@ -143,6 +143,7 @@ FC.defaults =
     nameplate_style = FONT_STYLE_SOFT_SHADOW_THIN,
     sct_style = FONT_STYLE_SOFT_SHADOW_THIN,
     chat_style = "thick-outline",
+    menu_style = FONT_STYLE_NORMAL,
 
     -- misc
     lore_fonts_enabled = false,
