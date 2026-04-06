@@ -8,8 +8,9 @@
 ## Description: Changes most in-game fonts to new custom fonts.
 ## Author: |c4B8BFEFerrety|r, |cFF1493Antisenil|r, |c9966ffzetauma|r
 ## Version: 1.6
+## AddOnVersion: 16
 ## APIVersion: 101049
-## DependsOn: LibAddonMenu-2.0
+## DependsOn: LibAddonMenu-2.0>=41
 ## SavedVariables: FontChangerSettings
 
 Constants.lua
